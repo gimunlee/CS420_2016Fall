@@ -1,10 +1,15 @@
 package Parse;
 
-class Token extends java_cup.runtime.token {
+// class Token extends java_cup.runtime.token {
+class Token extends java_cup.runtime.Symbol {
   int left,right;
   Token(int l, int r, int kind) {
    super(kind);
    left=l; right=r;
+  }
+  Token(int kind, int l, int r, Object o) {
+    super(kind,l,r,o);
+    left=l; right=r;
   }
 }
 

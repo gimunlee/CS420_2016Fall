@@ -1,11 +1,10 @@
 package Parse;
-import ErrorMsg.ErrorMsg;
 
 %% 
 
 %implements Lexer
 %function nextToken
-%type java_cup.runtime.Symbol
+%type Token
 %char
 
 %{
@@ -21,8 +20,8 @@ private void err(String s) {
   err(yychar,s);
 }
 
-private java_cup.runtime.Symbol tok(int kind, Object value) {
-    return new java_cup.runtime.Symbol(kind, yychar, yychar+yylength(), value);
+private Token tok(int kind, Object value) {
+    return new Token(kind, yychar, yychar+yylength(), value);
 }
 
 private ErrorMsg.ErrorMsg errorMsg;
