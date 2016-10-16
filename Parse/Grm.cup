@@ -28,18 +28,44 @@ parser code  {:
 
 scan with {: return lexer.nextToken(); :};
 
-terminal String ID, STRING;
-terminal Integer INT;
+terminal String IDENTIFIER, STRING;
+terminal Integer NUM;
 terminal COMMA, COLON, SEMICOLON, LPAREN, RPAREN, LBRACK, RBRACK, 
 	LBRACE, RBRACE, DOT, PLUS, MINUS, TIMES, DIVIDE, EQ, NEQ, LT, LE, 
 	GT, GE, AND, OR, ASSIGN, ARRAY, IF, THEN, ELSE, WHILE, FOR, TO,
-	DO, LET, IN, END, OF, BREAK, NIL, FUNCTION, VAR, TYPE;
+	DO, LET, IN, END, OF, BREAK, NIL, FUNCTION, VAR, TYPE, INT, FLOAT;
 
 
-non terminal Absyn.Exp program;
+non terminal Absyn.Program program;
+non terminal Absyn.DecList declist;
+non terminal Absyn.FuncList funclist;
+non terminal Absyn.VarDec declaration;
+non terminal Absyn.FieldList identList;
+non terminal Absyn.
+non terminal Absyn.FunctionDec function;
+non terminal Absyn.FieldList paramlist;
+non terminal Absyn.NameTy type;
+non terminal Absyn.CompoundStmt compoundstmt;
+non terminal Absyn.StmtList stmtlist;
+non terminal Absyn.Stmt stmt;
+non terminal Absyn.AssignStmt assignstmt;
+non terminal Absyn.AssignExp assign;
+non terminal Absyn.CallStmt callstmt;
+non terminal Absyn.CallExp call;
+non terminal Absyn.ReturnStmt retstmt;
+non terminal Absyn.WhileStmt whilestmt;
+non terminal Absyn.ForStmt forstmt;
+non terminal Absyn.IfStmt ifstmt;
+non terminal Absyn.Exp expr;
+non terminal Absyn.FieldList arglist;
 
 start with program;
 
-program ::= ID  {: RESULT= new Absyn.VarExp(IDleft,
-			    new Absyn.SimpleVar(IDleft,sym(ID))); :}
-         ;
+// program ::= ID  {: RESULT= new Absyn.VarExp(IDleft,
+// 			    new Absyn.SimpleVar(IDleft,sym(ID))); :}
+//          ;
+program ::= declist:d funclist:f {: RESULT= new Absyn.Program(d,f); :};
+declist ::= declaration:d decllist:dl {: dl.add(d); RESULT = dl; :}
+          | {: RESULT = new Absyn.DecList(new Absyn.Declaration(),null); :}
+declaration ::= INT IDENTIFIER
+funclist ::=
