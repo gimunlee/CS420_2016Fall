@@ -1,0 +1,8 @@
+Written by 20120666 Gimun Lee
+
+Not yet runnable...
+
+To build in Windows
+javac JLex/Main.java
+javac -classpath . JLex.Main Parse/miniC.lex
+java -d . Parse.Main input.txt

@@ -29,7 +29,8 @@ parser code  {:
 scan with {: return lexer.nextToken(); :};
 
 terminal String IDENTIFIER, STRING;
-terminal Integer NUM;
+terminal Integer INTNUM;
+terminal Float FLOATNUM;
 terminal COMMA, COLON, SEMICOLON, LPAREN, RPAREN, LBRACK, RBRACK, 
 	LBRACE, RBRACE, DOT, PLUS, MINUS, TIMES, DIVIDE, EQ, NEQ, LT, LE, 
 	GT, GE, AND, OR, ASSIGN, ARRAY, IF, THEN, ELSE, WHILE, FOR, TO,
@@ -41,7 +42,6 @@ non terminal Absyn.DecList declist;
 non terminal Absyn.FuncList funclist;
 non terminal Absyn.VarDec declaration;
 non terminal Absyn.FieldList identList;
-non terminal Absyn.
 non terminal Absyn.FunctionDec function;
 non terminal Absyn.FieldList paramlist;
 non terminal Absyn.NameTy type;
@@ -58,6 +58,13 @@ non terminal Absyn.ForStmt forstmt;
 non terminal Absyn.IfStmt ifstmt;
 non terminal Absyn.Exp expr;
 non terminal Absyn.FieldList arglist;
+
+precedence right ASSIGN;
+precedence left EQ, NEQ;
+precedence left LT, RE, GT, GE;
+precedence left PLUS, MINUS;
+precedence left MULDIV;
+precedence right UMINUS;
 
 start with program;
 
