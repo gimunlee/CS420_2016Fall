@@ -42,12 +42,13 @@ terminal IF, ELSE;
 terminal WHILE, FOR, DO;
 terminal BREAK;
 terminal RETURN;
-terminal SWITCH, CASE;
+terminal SWITCH, CASE, DEFAULT;
 
 terminal Float INTNUM, FLOATNUM;
 terminal String IDENTIFIER;
 
 
+non terminal Absyn.Program programm;
 non terminal Absyn.Program program;
 non terminal Absyn.DecList declist;
 non terminal Absyn.FuncList funclist;
@@ -74,29 +75,32 @@ non terminal Absyn.DefaultStmt defaultstmt;
 non terminal Absyn.Exp expr;
 non terminal Absyn.FieldList arglist;
 
-precedence right INT, FLOAT;
+precedence nonassoc ELSE;
 precedence right ASSIGN;
 precedence left EQ, NEQ;
 precedence left LT, LE, GT, GE;
 precedence left PLUS, MINUS;
 precedence left AND, OR;
 precedence left TIMES, DIVIDE;
-precedence nonassoc ELSE;
 
-start with program;
+start with programm;
 
-program ::= declist funclist;
+programm ::= switchstmt;
+
+program ::= declist funclist
+          | funclist
+          | declist
+          |;
 
 declist ::= declist declaration
-          |;
+          | declaration;
 funclist ::= funclist function
-            |;
-declaration ::= INT identlist SEMICOLON
-              | FLOAT identlist SEMICOLON;
-identlist ::= identlist COMMA IDENTIFIER
-            | IDENTIFIER;
+            | function;
+declaration ::= type identlist SEMICOLON;
+identlist ::= identlist COMMA identifier
+            | identifier;
 identifier ::= IDENTIFIER
-            | IDENTIFIER LBRACK INTNUM RBRACK;
+            | IDENTIFIER LBRACK expr RBRACK;
 function ::= type IDENTIFIER LPAREN paramlist RPAREN compoundstmt
             | type IDENTIFIER LPAREN RPAREN compoundstmt;
 paramlist ::= paramlist COMMA type IDENTIFIER
@@ -104,9 +108,11 @@ paramlist ::= paramlist COMMA type IDENTIFIER
 type ::= INT
       | FLOAT;
 compoundstmt ::= LBRACE declist stmtlist RBRACE
+              | LBRACE declist RBRACE
               | LBRACE stmtlist RBRACE
               | LBRACE RBRACE;
-stmtlist ::= stmtlist stmt;
+stmtlist ::= stmtlist stmt
+          | stmt;
 stmt ::= assignstmt
       | callstmt
       | retstmt
@@ -114,8 +120,7 @@ stmt ::= assignstmt
       | forstmt
       | ifstmt
       | switchstmt
-      | compoundstmt
-      | SEMICOLON;
+      | compoundstmt;
 assignstmt ::= assign SEMICOLON;
 assign ::= identifier ASSIGN expr;
 callstmt ::= call SEMICOLON;
@@ -145,6 +150,8 @@ caselist ::= caselist CASE INTNUM COLON stmtlist BREAK SEMICOLON
             | CASE INTNUM COLON stmtlist
             | CASE INTNUM COLON stmtlist BREAK SEMICOLON
             | CASE INTNUM COLON BREAK SEMICOLON;
+defaultstmt ::= DEFAULT COLON stmtlist
+              | DEFAULT COLON;
 expr ::= MINUS expr
       | expr TIMES expr
       | expr DIVIDE expr
@@ -161,6 +168,6 @@ expr ::= MINUS expr
       | call
       | INTNUM
       | FLOATNUM
-      | identifier ;
+      | identifier;
 arglist ::= arglist COMMA expr
           | expr;
