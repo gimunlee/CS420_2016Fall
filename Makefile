@@ -13,18 +13,21 @@ CLASSES = \
 default: all
 
 cup:
-	javac -d . ./java_cup/Main.java 
+	javac -d . .\java_cup\Main.java 
 cupc:
-	java -cp .:./java_cup java_cup.Main -package Parse -parser Grm Parse/Grm.cup
-	mv Grm.java Parse/Grm.java
-	mv sym.java Parse/sym.java
+	java -cp .;.\java_cup java_cup.Main -package Parse -parser Grm Parse\Grm.cup
+	copy /y Grm.java Parse\Grm.java
+	copy /y sym.java Parse\sym.java
+	del Grm.java
+	del sym.java
 lex:
-	javac -d . ./JLex/Main.java
-lexc: ./JLex/Main.java
-	java JLex.Main Parse/miniC.lex
-	mv Parse/miniC.lex.java Parse/Yylex.java
+	javac -d . .\JLex\Main.java
+lexc: .\JLex\Main.java
+	java JLex.Main Parse\miniC.lex
+	copy /y Parse\miniC.lex.java Parse\Yylex.java
+	del Parse\miniC.lex.java
 all: lexc cupc
 	$(JC) $(JFLAGS) $(CLASSES)
 
 clean:
-	$(RM) -rf *.class
+	del /r /f Parse/*.class

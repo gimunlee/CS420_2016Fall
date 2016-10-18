@@ -83,9 +83,9 @@ precedence left PLUS, MINUS;
 precedence left AND, OR;
 precedence left TIMES, DIVIDE;
 
-start with programm;
+start with program;
 
-programm ::= switchstmt;
+programm ::= expr;
 
 program ::= declist funclist
           | funclist
@@ -145,13 +145,17 @@ switchstmt ::= SWITCH LPAREN expr RPAREN LBRACE caselist defaultstmt RBRACE
             | SWITCH LPAREN expr RPAREN LBRACE defaultstmt RBRACE
             | SWITCH LPAREN expr RPAREN LBRACE RBRACE;
 caselist ::= caselist CASE INTNUM COLON stmtlist BREAK SEMICOLON
-            | caselist CASE INTNUM COLON stmtlist
             | caselist CASE INTNUM COLON BREAK SEMICOLON
-            | CASE INTNUM COLON stmtlist
+            | caselist CASE INTNUM COLON stmtlist
+            | caselist CASE INTNUM COLON
             | CASE INTNUM COLON stmtlist BREAK SEMICOLON
-            | CASE INTNUM COLON BREAK SEMICOLON;
-defaultstmt ::= DEFAULT COLON stmtlist
-              | DEFAULT COLON;
+            | CASE INTNUM COLON BREAK SEMICOLON
+            | CASE INTNUM COLON stmtlist
+            | CASE INTNUM COLON;
+defaultstmt ::= DEFAULT COLON stmtlist BREAK SEMICOLON
+            | DEFAULT COLON stmtlist
+            | DEFAULT COLON BREAK SEMICOLON
+            | DEFAULT COLON;
 expr ::= MINUS expr
       | expr TIMES expr
       | expr DIVIDE expr

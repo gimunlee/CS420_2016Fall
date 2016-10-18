@@ -45,7 +45,7 @@ Yylex(java.io.InputStream s, ErrorMsg.ErrorMsg e) {
 
 
 %%
-/\*[^*]*\*/ {}
+//.*$ {}
 [ \r\t\n]+ {}
 ","	{return tok(sym.COMMA);}
 ":" {return tok(sym.COLON);}
@@ -69,7 +69,7 @@ Yylex(java.io.InputStream s, ErrorMsg.ErrorMsg e) {
 "=" { return tok(sym.ASSIGN); }
 "+" {return tok(sym.PLUS);}
 "-" {return tok(sym.MINUS);}
-/[~/] {return tok(sym.DIVIDE); }
+"/" {return tok(sym.DIVIDE); }
 "*" {return tok(sym.TIMES); }
 
 "&&" { return tok(sym.AND); }
@@ -89,5 +89,5 @@ Yylex(java.io.InputStream s, ErrorMsg.ErrorMsg e) {
 "case" { return tok(sym.CASE); }
 
 [0-9]+ {return tok(sym.INTNUM, new Integer(yytext())); }
-[0-9]+.[0-9]+ {return tok(sym.FLOATNUM, new Float(yytext()));}
+[0-9]+\.[0-9]+ {return tok(sym.FLOATNUM, new Float(yytext()));}
 [A-Za-z][A-Za-z0-9_]* {return tok(sym.IDENTIFIER);}
