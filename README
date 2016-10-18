@@ -1,12 +1,12 @@
 Written by 20120666 Gimun Lee
 
-Not yet runnable...
-Not resolved issue for 'program' to multi non terminals.
+supports Windows 10 and MacOS
 
-java_cup and JLex are already compiled.
-If not, 'javac -d . java_cup\Main.java'
-        'javac -d . JLex\Main.java'
+To compile java_cup and JLex, execute following two lines in bash.
+javac -d . java_cup\Main.java
+javac -d . JLex\Main.java
         
-To build in Windows with GNU Makefile,
-'make all' at root.
+To build in Windows with GNU Makefile, copy Makefile.windows to Makefile
+To build in MacOS with Makefile, copy Makefile.macos to Makefile
+'make all' at root. then
 'java Parse.Main input.txt'
