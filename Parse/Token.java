@@ -11,6 +11,9 @@ class Token extends java_cup.runtime.Symbol {
     super(kind,l,r,o);
     left=l; right=r;
   }
+  Token(int kind) {
+    super(kind);
+  }
 }
 
 class StrToken extends Token {

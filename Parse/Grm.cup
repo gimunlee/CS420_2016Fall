@@ -38,9 +38,11 @@ terminal PLUS, MINUS, DIVIDE, TIMES;
 terminal AND, OR;
 
 terminal INT, FLOAT;
-terminal IF, ELSE, ELSEIF;
+terminal IF, ELSE;
 terminal WHILE, FOR, DO;
 terminal BREAK;
+terminal RETURN;
+terminal SWITCH, CASE;
 
 terminal Float INTNUM, FLOATNUM;
 terminal String IDENTIFIER;
@@ -49,9 +51,9 @@ terminal String IDENTIFIER;
 non terminal Absyn.Program program;
 non terminal Absyn.DecList declist;
 non terminal Absyn.FuncList funclist;
-non terminal Absyn.De
 non terminal Absyn.VarDec declaration;
 non terminal Absyn.FieldList identlist;
+non terminal Absyn.Ident identifier;
 non terminal Absyn.FunctionDec function;
 non terminal Absyn.FieldList paramlist;
 non terminal Absyn.NameTy type;
@@ -66,25 +68,99 @@ non terminal Absyn.ReturnStmt retstmt;
 non terminal Absyn.WhileStmt whilestmt;
 non terminal Absyn.ForStmt forstmt;
 non terminal Absyn.IfStmt ifstmt;
+non terminal Absyn.SwitchStmt switchstmt;
+non terminal Absyn.CaseList caselist;
+non terminal Absyn.DefaultStmt defaultstmt;
 non terminal Absyn.Exp expr;
 non terminal Absyn.FieldList arglist;
 
+precedence right INT, FLOAT;
 precedence right ASSIGN;
 precedence left EQ, NEQ;
-precedence left LT, RE, GT, GE;
+precedence left LT, LE, GT, GE;
 precedence left PLUS, MINUS;
-precedence left MULDIV;
-precedence right UMINUS;
+precedence left AND, OR;
+precedence left TIMES, DIVIDE;
+precedence nonassoc ELSE;
 
 start with program;
 
-program ::= declist funclist // {: RESULT= new Absyn.Program(d,f); :};
-          | declist
-          | funclist
+program ::= declist funclist;
+
 declist ::= declist declaration
-          | declaration
-funclist ::= funclist 
-declaration ::= INT identlist
-              | FLOAT IDENTIFIER
-identilist ::= identlist IDENTIFIER
-            | IDENTIFIER
+          |;
+funclist ::= funclist function
+            |;
+declaration ::= INT identlist SEMICOLON
+              | FLOAT identlist SEMICOLON;
+identlist ::= identlist COMMA IDENTIFIER
+            | IDENTIFIER;
+identifier ::= IDENTIFIER
+            | IDENTIFIER LBRACK INTNUM RBRACK;
+function ::= type IDENTIFIER LPAREN paramlist RPAREN compoundstmt
+            | type IDENTIFIER LPAREN RPAREN compoundstmt;
+paramlist ::= paramlist COMMA type IDENTIFIER
+            | type IDENTIFIER;
+type ::= INT
+      | FLOAT;
+compoundstmt ::= LBRACE declist stmtlist RBRACE
+              | LBRACE stmtlist RBRACE
+              | LBRACE RBRACE;
+stmtlist ::= stmtlist stmt;
+stmt ::= assignstmt
+      | callstmt
+      | retstmt
+      | whilestmt
+      | forstmt
+      | ifstmt
+      | switchstmt
+      | compoundstmt
+      | SEMICOLON;
+assignstmt ::= assign SEMICOLON;
+assign ::= identifier ASSIGN expr;
+callstmt ::= call SEMICOLON;
+call ::= IDENTIFIER LPAREN arglist RPAREN
+      | IDENTIFIER LPAREN RPAREN;
+retstmt ::= RETURN expr SEMICOLON
+          | RETURN SEMICOLON;
+whilestmt ::= WHILE LPAREN expr RPAREN stmt
+            | DO stmt WHILE LPAREN expr RPAREN SEMICOLON;
+forstmt ::= FOR LPAREN assign SEMICOLON expr SEMICOLON assign RPAREN stmt
+          | FOR LPAREN assign SEMICOLON expr SEMICOLON RPAREN stmt
+          | FOR LPAREN assign SEMICOLON SEMICOLON assign RPAREN stmt
+          | FOR LPAREN assign SEMICOLON SEMICOLON RPAREN stmt
+          | FOR LPAREN SEMICOLON expr SEMICOLON assign RPAREN stmt
+          | FOR LPAREN SEMICOLON expr SEMICOLON RPAREN stmt
+          | FOR LPAREN SEMICOLON SEMICOLON assign RPAREN stmt
+          | FOR LPAREN SEMICOLON SEMICOLON RPAREN stmt;
+ifstmt ::= IF LPAREN expr RPAREN stmt ELSE stmt
+          | IF LPAREN expr RPAREN stmt;
+switchstmt ::= SWITCH LPAREN expr RPAREN LBRACE caselist defaultstmt RBRACE
+            | SWITCH LPAREN expr RPAREN LBRACE caselist RBRACE
+            | SWITCH LPAREN expr RPAREN LBRACE defaultstmt RBRACE
+            | SWITCH LPAREN expr RPAREN LBRACE RBRACE;
+caselist ::= caselist CASE INTNUM COLON stmtlist BREAK SEMICOLON
+            | caselist CASE INTNUM COLON stmtlist
+            | caselist CASE INTNUM COLON BREAK SEMICOLON
+            | CASE INTNUM COLON stmtlist
+            | CASE INTNUM COLON stmtlist BREAK SEMICOLON
+            | CASE INTNUM COLON BREAK SEMICOLON;
+expr ::= MINUS expr
+      | expr TIMES expr
+      | expr DIVIDE expr
+      | expr PLUS expr
+      | expr MINUS expr
+      | expr AND expr
+      | expr OR expr
+      | expr LT expr
+      | expr GT expr
+      | expr LE expr
+      | expr GE expr
+      | expr EQ expr
+      | expr NEQ expr
+      | call
+      | INTNUM
+      | FLOATNUM
+      | identifier ;
+arglist ::= arglist COMMA expr
+          | expr;

@@ -16,7 +16,7 @@ public class Parse {
       /* open input files, etc. here */
 
       try {
-          parser./*debug_*/parse();
+          parser.debug_parse();
       } catch (Throwable e) {
 	e.printStackTrace();
 	throw new Error(e.toString());
@@ -24,6 +24,6 @@ public class Parse {
       finally {
          try {inp.close();} catch (java.io.IOException e) {}
       }
-      absyn=parser.parseResult;
+    //   absyn=parser.parseResult;
 } }   }
 

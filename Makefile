@@ -1,19 +1,27 @@
-JFLAGS = -g -d .   
+JFLAGS = -g -d . -cp .;./java_cup
 JC = javac
 .SUFFIXES: .java .class
+
 .java.class:
-  $(JC) $(JFLAGS) $*.java
+	$(JC) $(JFLAGS) $<
 
 CLASSES = \
-        Parse/Main.java
+	Parse/*.java
 
 default: all
 
-cupc: Parse/Grm.cup
-  java -classpath ..;../java_cup java_cup.Main -package Parse -parser Grm Grm.cup
-lexc: Parse/miniC.lexc
-  java -classpath .;./JLex JLex.Main Parse/miniC.lex
-  mv Parse/miniC.lex.java Parse/Yylex.java
-all: $(CLASSES:.java=.class)
+cupc: 
+	java -classpath .;.\java_cup java_cup.Main -package Parse -parser Grm Parse\Grm.cup
+	copy Grm.java Parse\Grm.java
+	copy sym.java Parse\sym.java
+	del Grm.java
+	del sym.java
+lexc: 
+	java JLex.Main Parse/miniC.lex
+	del Parse\Yylex.java
+	ren Parse\miniC.lex.java Yylex.java
+all: lexc cupc
+	$(JC) $(JFLAGS) Parse/*.java
 
-clean: $(RM) *.class
+clean:
+	$(RM) *.class

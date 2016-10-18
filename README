@@ -1,8 +1,12 @@
 Written by 20120666 Gimun Lee
 
 Not yet runnable...
+Not resolved issue for 'program' to multi non terminals.
 
-To build in Windows
-javac JLex/Main.java
-javac -classpath . JLex.Main Parse/miniC.lex
-java -d . Parse.Main input.txt
+java_cup and JLex are already compiled.
+If not, 'javac -d . java_cup\Main.java'
+        'javac -d . JLex\Main.java'
+        
+To build in Windows with GNU Makefile,
+'make all' at root.
+'java Parse.Main input.txt'

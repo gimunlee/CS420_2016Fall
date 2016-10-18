@@ -1,4 +1,5 @@
 package Parse;
+import java_cup.runtime.*;
 
 %% 
 
@@ -23,6 +24,9 @@ private void err(String s) {
 private Token tok(int kind, Object value) {
     return new Token(kind, yychar, yychar+yylength(), value);
 }
+private Token tok(int kind) {
+  return tok(kind, null);
+}
 
 private ErrorMsg.ErrorMsg errorMsg;
 
@@ -41,46 +45,47 @@ Yylex(java.io.InputStream s, ErrorMsg.ErrorMsg e) {
 
 
 %%
-" "	{}
-\n	{newline();}
-","	{return tok(sym.COMMA, null);}
-":" {return new Symbol(sym.COLON);}
-";" {return new Symbol(sym.SEMICOLON);}
+[ \r\t\n]+ {}
+","	{return tok(sym.COMMA);}
+":" {return tok(sym.COLON);}
+; {return tok(sym.SEMICOLON);}
 
-"(" {return new Symbol(sym.LPAREN);}
-")" {return new Symbol(sym.RPAREN);}
-"{" {return new Symbol(sym.LBRACE);}
-"}" {return new Symbol(sym.RBRACE);}
-"[" {return new Symbol(sym.LBRACK);}
-"]" {return new Symbol(sym.RBRACK);}
+"(" {return tok(sym.LPAREN);}
+")" {return tok(sym.RPAREN);}
+"{" {return tok(sym.LBRACE);}
+"}" {return tok(sym.RBRACE);}
+"[" {return tok(sym.LBRACK);}
+"]" {return tok(sym.RBRACK);}
 
-">" { return new Symbol(sym.GT);}
-">=" { return new Symbol(sym.GE);}
-"<" { return new Symbol(sym.LT);}
-"<=" { return new Symbol(sym.LE);}
-"==" { return new Symbol(sym.EQ); }
-"!=" { return new Symbol(sym.NEQ); }
+">" { return tok(sym.GT);}
+">=" { return tok(sym.GE);}
+"<" { return tok(sym.LT);}
+"<=" { return tok(sym.LE);}
+"==" { return tok(sym.EQ); }
+"!=" { return tok(sym.NEQ); }
 
-"." {return new Symbol(sym.DOT);}
-"=" { return new Symbol(sym.ASSIGN); }
-"+" {return new Symbol(sym.PLUS);}
-"-" {return new Symbol(sym.MINUS);}
-"/" {return new Symbol(sym.DIVIDE); }
-"*" {return new Symbol(sym.TIMES); }
+"." {return tok(sym.DOT);}
+"=" { return tok(sym.ASSIGN); }
+"+" {return tok(sym.PLUS);}
+"-" {return tok(sym.MINUS);}
+"/" {return tok(sym.DIVIDE); }
+"*" {return tok(sym.TIMES); }
 
-"&&" { return new Symbol(sym.AND); }
-"||" { return new SYmbol(sym.OR); }
+"&&" { return tok(sym.AND); }
+"||" { return tok(sym.OR); }
 
-"int" {return new Symbol(sym.INT);}
-"float" {return new Symbol(sym.FLOAT);}
-"if" { return new Symbol(sym.IF); }
-"else" { return new Symbol(sym.ELSE); }
-"else if" { return new Symbol(sym.ELSEIF); }
-"while" { return new Symbol(sym.WHILE); }
-"for" { return new Symbol(sym.FOR); }
-"do" { return new Symbol(sym.DO); }
-"break" { return new Symbol(sym.BREAK); }
+"int" {return tok(sym.INT);}
+"float" {return tok(sym.FLOAT);}
+"if" { return tok(sym.IF); }
+"else" { return tok(sym.ELSE); }
+"while" { return tok(sym.WHILE); }
+"for" { return tok(sym.FOR); }
+"do" { return tok(sym.DO); }
+"break" { return tok(sym.BREAK); }
+"return" { return tok(sym.RETURN); }
+"switch" { return tok(sym.SWITCH); }
+"case" { return tok(sym.CASE); }
 
-[0-9]+ {return new Symbol(sym.INTNUM, new Integer(yytext())); }
-[0-9]+.[0-9]+ {return new Symbol(sym.FLOATNUM, new Float(yytext()));}
-[A-Za-z][A-Za-z0-9_]* {return new SYmbol(sym.IDENTIFIER);}
+[0-9]+ {return tok(sym.INTNUM, new Integer(yytext())); }
+[0-9]+.[0-9]+ {return tok(sym.FLOATNUM, new Float(yytext()));}
+[A-Za-z][A-Za-z0-9_]* {return tok(sym.IDENTIFIER);}
